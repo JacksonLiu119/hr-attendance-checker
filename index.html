@@ -1,0 +1,947 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>仙暉 HR 月結考勤檢核</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f7f8fa;
+      --panel: #ffffff;
+      --ink: #1f2933;
+      --muted: #637083;
+      --line: #d8dee8;
+      --blue: #2458a6;
+      --green: #1f7a5c;
+      --red: #c62828;
+      --amber: #9b5d00;
+      --soft-red: #fff1f0;
+      --soft-amber: #fff7e6;
+      --soft-green: #ecf8f2;
+      --shadow: 0 10px 28px rgba(31, 41, 51, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Microsoft JhengHei", "Noto Sans TC", Arial, sans-serif;
+      line-height: 1.5;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    header {
+      background: var(--panel);
+      border-bottom: 1px solid var(--line);
+      padding: 18px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+
+    .header-inner {
+      max-width: 1480px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    h1 {
+      font-size: 22px;
+      margin: 0;
+      letter-spacing: 0;
+    }
+
+    .subhead {
+      color: var(--muted);
+      font-size: 14px;
+      margin-top: 3px;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .button,
+    .file-label {
+      min-height: 40px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--ink);
+      border-radius: 6px;
+      padding: 8px 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .button.primary,
+    .file-label {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: #fff;
+    }
+
+    .file-label input {
+      display: none;
+    }
+
+    main {
+      max-width: 1480px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 22px 24px 36px;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1.2fr repeat(3, minmax(180px, 0.35fr));
+      gap: 12px;
+      align-items: end;
+      margin-bottom: 16px;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+    }
+
+    label,
+    .field-title {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    select,
+    input[type="number"],
+    input[type="search"] {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 6px;
+      min-height: 40px;
+      padding: 8px 10px;
+      color: var(--ink);
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .metric {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      box-shadow: var(--shadow);
+      min-height: 88px;
+    }
+
+    .metric .value {
+      font-size: 28px;
+      font-weight: 800;
+      margin-top: 4px;
+    }
+
+    .metric.warn .value {
+      color: var(--amber);
+    }
+
+    .metric.danger .value {
+      color: var(--red);
+    }
+
+    .content {
+      display: grid;
+      grid-template-columns: minmax(320px, 360px) minmax(0, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-head {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .panel-title {
+      font-weight: 800;
+    }
+
+    .employee-list {
+      max-height: calc(100vh - 292px);
+      overflow: auto;
+    }
+
+    .employee-row {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      padding: 12px 14px;
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .employee-row:hover,
+    .employee-row.active {
+      background: #eef4ff;
+    }
+
+    .employee-name {
+      font-weight: 800;
+    }
+
+    .employee-meta {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .badge {
+      align-self: center;
+      border-radius: 999px;
+      padding: 3px 8px;
+      font-size: 12px;
+      font-weight: 800;
+      background: #eef1f5;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .badge.danger {
+      background: var(--soft-red);
+      color: var(--red);
+    }
+
+    .badge.warn {
+      background: var(--soft-amber);
+      color: var(--amber);
+    }
+
+    .badge.ok {
+      background: var(--soft-green);
+      color: var(--green);
+    }
+
+    .table-wrap {
+      overflow: auto;
+      max-height: calc(100vh - 292px);
+    }
+
+    table {
+      border-collapse: separate;
+      border-spacing: 0;
+      width: 100%;
+      min-width: 1080px;
+    }
+
+    th,
+    td {
+      border-bottom: 1px solid var(--line);
+      padding: 9px 10px;
+      text-align: left;
+      vertical-align: middle;
+      white-space: nowrap;
+      font-size: 14px;
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: #f2f5f9;
+      color: #4c5a6a;
+      font-size: 13px;
+    }
+
+    tr.absent td {
+      background: #fafbfc;
+      color: #7d8794;
+    }
+
+    tr.short td.hours,
+    tr.short td.status-cell {
+      color: var(--red);
+      font-weight: 800;
+    }
+
+    tr.overtime td.overtime-cell {
+      color: var(--green);
+      font-weight: 800;
+    }
+
+    .status-cell .badge {
+      border-radius: 6px;
+    }
+
+    .empty {
+      padding: 48px 22px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .note {
+      color: var(--muted);
+      font-size: 13px;
+      padding: 10px 16px;
+      border-top: 1px solid var(--line);
+      background: #fbfcfe;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 1100px) {
+      .header-inner,
+      .content {
+        display: block;
+      }
+
+      .toolbar {
+        justify-content: flex-start;
+        margin-top: 12px;
+      }
+
+      .controls,
+      .summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .employee-list,
+      .table-wrap {
+        max-height: none;
+      }
+
+      .content .panel:first-child {
+        margin-bottom: 16px;
+      }
+    }
+
+    @media (max-width: 680px) {
+      header,
+      main {
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+
+      .controls,
+      .summary {
+        grid-template-columns: 1fr;
+      }
+
+      .button,
+      .file-label {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="header-inner">
+        <div>
+          <h1>仙暉 HR 月結考勤檢核</h1>
+          <div class="subhead">匯入考勤 Excel 後，自動補齊整月日期、標示未滿 9 小時與加班 46 小時門檻</div>
+        </div>
+        <div class="toolbar">
+          <label class="file-label">
+            匯入 Excel
+            <input id="fileInput" type="file" accept=".xlsx,.xls,.csv">
+          </label>
+          <button id="sampleButton" class="button" type="button">載入範例</button>
+          <button id="exportButton" class="button primary" type="button" disabled>匯出檢核 Excel</button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="controls">
+        <div class="field">
+          <label for="searchInput">搜尋員工</label>
+          <input id="searchInput" type="search" placeholder="輸入姓名、員工序號或考勤號碼">
+        </div>
+        <div class="field">
+          <label for="monthSelect">月結月份</label>
+          <select id="monthSelect"></select>
+        </div>
+        <div class="field">
+          <label for="requiredHours">每日應滿時數</label>
+          <input id="requiredHours" type="number" min="0" step="0.5" value="9">
+        </div>
+        <div class="field">
+          <label for="overtimeLimit">月加班上限</label>
+          <input id="overtimeLimit" type="number" min="0" step="1" value="46">
+        </div>
+      </section>
+
+      <section class="summary" aria-label="月結摘要">
+        <div class="metric">
+          <div class="field-title">人員數</div>
+          <div id="totalEmployees" class="value">0</div>
+        </div>
+        <div class="metric">
+          <div class="field-title">上班日筆數</div>
+          <div id="totalWorkDays" class="value">0</div>
+        </div>
+        <div class="metric warn">
+          <div class="field-title">未上班 / 休假日</div>
+          <div id="totalAbsentDays" class="value">0</div>
+        </div>
+        <div class="metric danger">
+          <div class="field-title">未滿 9 小時</div>
+          <div id="totalShortDays" class="value">0</div>
+        </div>
+        <div class="metric danger">
+          <div class="field-title">加班超過上限</div>
+          <div id="totalOverLimit" class="value">0</div>
+        </div>
+      </section>
+
+      <section class="content">
+        <aside class="panel">
+          <div class="panel-head">
+            <div class="panel-title">月結人員</div>
+            <span id="employeeCount" class="badge">0 人</span>
+          </div>
+          <div id="employeeList" class="employee-list">
+            <div class="empty">請先匯入 Excel 或載入範例資料</div>
+          </div>
+        </aside>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <div id="detailTitle" class="panel-title">每日明細</div>
+              <div id="detailSubtitle" class="employee-meta">列出整個月份每日狀態</div>
+            </div>
+            <span id="monthOvertimeBadge" class="badge">月加班 0 小時</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>日期</th>
+                  <th>星期</th>
+                  <th>狀態</th>
+                  <th>上班1</th>
+                  <th>下班1</th>
+                  <th>上班2</th>
+                  <th>下班2</th>
+                  <th>合計</th>
+                  <th>加班時數</th>
+                  <th>月加班累計</th>
+                  <th>備註</th>
+                </tr>
+              </thead>
+              <tbody id="detailBody">
+                <tr><td colspan="11" class="empty">尚無資料</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="note">欄位名稱可使用「員工序號、考勤號碼、姓名、日期、上班1、下班1、上班2、下班2、合計、加班時數」；若缺少合計，系統會用打卡時間估算。</div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const weekdays = ["日", "一", "二", "三", "四", "五", "六"];
+    const fileInput = document.querySelector("#fileInput");
+    const sampleButton = document.querySelector("#sampleButton");
+    const exportButton = document.querySelector("#exportButton");
+    const searchInput = document.querySelector("#searchInput");
+    const monthSelect = document.querySelector("#monthSelect");
+    const requiredHoursInput = document.querySelector("#requiredHours");
+    const overtimeLimitInput = document.querySelector("#overtimeLimit");
+    const employeeList = document.querySelector("#employeeList");
+    const detailBody = document.querySelector("#detailBody");
+    const detailTitle = document.querySelector("#detailTitle");
+    const detailSubtitle = document.querySelector("#detailSubtitle");
+    const monthOvertimeBadge = document.querySelector("#monthOvertimeBadge");
+
+    let rawRows = [];
+    let selectedEmployeeKey = "";
+
+    const sampleRows = [
+      ["員工序號", "考勤號碼", "姓名", "日期", "上班1", "下班1", "上班2", "下班2", "合計", "加班時數"],
+      [11, "C11107", "杰威", "2026/4/1", "16:28:00", "20:00:00", "", "", "03:32:00", "2+2"],
+      [11, "C11107", "杰威", "2026/4/2", "07:32:00", "16:01:00", "", "", "08:29:00", ""],
+      [11, "C11107", "杰威", "2026/4/7", "07:37:00", "16:01:00", "16:01:00", "20:00:00", "12:23:00", "2+2"],
+      [11, "C11107", "杰威", "2026/4/8", "07:39:00", "16:04:00", "16:04:00", "20:00:00", "12:21:00", "2+2"],
+      [11, "C11107", "杰威", "2026/4/9", "07:36:00", "16:04:00", "16:04:00", "20:00:00", "12:24:00", "2+2"],
+      [11, "C11107", "杰威", "2026/4/10", "07:38:00", "16:07:00", "", "", "08:29:00", ""],
+      [11, "C11107", "杰威", "2026/4/13", "07:38:00", "16:05:00", "16:05:00", "20:00:00", "12:22:00", "2+2"],
+      [11, "C11107", "杰威", "2026/4/14", "07:43:00", "16:06:00", "16:06:00", "20:00:00", "12:17:00", "2+2"],
+      [11, "C11107", "杰威", "2026/4/15", "07:22:00", "16:02:00", "16:02:00", "20:01:00", "12:39:00", "2+2"],
+      [11, "C11107", "杰威", "2026/4/17", "07:44:00", "16:02:00", "16:02:00", "20:00:00", "12:16:00", "2+2"],
+      [11, "C11107", "杰威", "2026/4/20", "07:38:00", "16:02:00", "16:02:00", "20:00:00", "12:22:00", "2+2"],
+      [11, "C11107", "杰威", "2026/4/21", "07:28:00", "16:00:00", "", "", "08:32:00", ""],
+      [11, "C11107", "杰威", "2026/4/22", "07:37:00", "16:01:00", "16:01:00", "20:00:00", "12:23:00", "2+2"],
+      [11, "C11107", "杰威", "2026/4/23", "07:43:00", "16:13:00", "", "", "08:30:00", ""],
+      [11, "C11107", "杰威", "2026/4/24", "07:42:00", "16:02:00", "", "", "08:20:00", ""],
+      [11, "C11107", "杰威", "2026/4/27", "07:19:00", "16:01:00", "", "", "08:42:00", ""],
+      [11, "C11107", "杰威", "2026/4/28", "07:39:00", "16:08:00", "", "", "08:29:00", ""],
+      [11, "C11107", "杰威", "2026/4/29", "07:39:00", "16:01:00", "", "", "08:22:00", ""],
+      [11, "C11107", "杰威", "2026/4/30", "07:39:00", "16:00:00", "", "", "08:21:00", ""]
+    ];
+
+    function normalizeHeader(value) {
+      return String(value || "").replace(/\s+/g, "").trim();
+    }
+
+    function pick(row, names) {
+      const normalized = {};
+      Object.keys(row).forEach((key) => {
+        normalized[normalizeHeader(key)] = row[key];
+      });
+      for (const name of names) {
+        const value = normalized[normalizeHeader(name)];
+        if (value !== undefined && value !== null) return value;
+      }
+      return "";
+    }
+
+    function excelDateToDate(value) {
+      if (value instanceof Date && !Number.isNaN(value)) return value;
+      if (typeof value === "number") {
+        const utcDays = Math.floor(value - 25569);
+        const utcValue = utcDays * 86400;
+        return new Date(utcValue * 1000);
+      }
+      const text = String(value || "").trim();
+      if (!text) return null;
+      const match = text.match(/(\d{4})[\/\-\.](\d{1,2})[\/\-\.](\d{1,2})/);
+      if (match) return new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+      const parsed = new Date(text);
+      return Number.isNaN(parsed.getTime()) ? null : parsed;
+    }
+
+    function formatDate(date) {
+      return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+    }
+
+    function monthKey(date) {
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+    }
+
+    function timeText(value) {
+      if (value === undefined || value === null || value === "") return "";
+      if (typeof value === "number") {
+        const seconds = Math.round(value * 24 * 60 * 60);
+        const h = Math.floor(seconds / 3600) % 24;
+        const m = Math.floor((seconds % 3600) / 60);
+        const s = seconds % 60;
+        return [h, m, s].map((n) => String(n).padStart(2, "0")).join(":");
+      }
+      const text = String(value).trim();
+      const match = text.match(/(\d{1,2}):(\d{2})(?::(\d{2}))?/);
+      return match ? `${match[1].padStart(2, "0")}:${match[2]}:${match[3] || "00"}` : text;
+    }
+
+    function durationToHours(value) {
+      if (value === undefined || value === null || value === "") return 0;
+      if (typeof value === "number") return value * 24;
+      const text = String(value).trim();
+      const match = text.match(/(\d{1,3}):(\d{2})(?::(\d{2}))?/);
+      if (!match) return 0;
+      return Number(match[1]) + Number(match[2]) / 60 + Number(match[3] || 0) / 3600;
+    }
+
+    function parseClockMinutes(value) {
+      const text = timeText(value);
+      const match = text.match(/^(\d{1,2}):(\d{2})/);
+      if (!match) return null;
+      return Number(match[1]) * 60 + Number(match[2]);
+    }
+
+    function estimateHours(row) {
+      const pairs = [
+        [row.start1, row.end1],
+        [row.start2, row.end2]
+      ];
+      return pairs.reduce((sum, pair) => {
+        const start = parseClockMinutes(pair[0]);
+        const end = parseClockMinutes(pair[1]);
+        if (start === null || end === null) return sum;
+        return sum + Math.max(0, end - start) / 60;
+      }, 0);
+    }
+
+    function parseOvertime(value, totalHours) {
+      if (value !== undefined && value !== null && String(value).trim()) {
+        const parts = String(value).match(/\d+(?:\.\d+)?/g);
+        if (parts) return parts.reduce((sum, part) => sum + Number(part), 0);
+      }
+      return Math.max(0, totalHours - Number(requiredHoursInput.value || 9));
+    }
+
+    function normalizeRows(rows) {
+      return rows.map((row) => {
+        const date = excelDateToDate(pick(row, ["日期", "出勤日期", "考勤日期"]));
+        const start1 = timeText(pick(row, ["上班1", "上班一", "上班時間1", "上班"]));
+        const end1 = timeText(pick(row, ["下班1", "下班一", "下班時間1", "下班"]));
+        const start2 = timeText(pick(row, ["上班2", "上班二", "上班時間2"]));
+        const end2 = timeText(pick(row, ["下班2", "下班二", "下班時間2"]));
+        const totalRaw = pick(row, ["合計", "總工時", "時數", "工作時數"]);
+        const base = {
+          employeeNo: String(pick(row, ["員工序號", "員工編號", "工號"]) || "").trim(),
+          attendanceNo: String(pick(row, ["考勤號碼", "考勤編號", "卡號"]) || "").trim(),
+          name: String(pick(row, ["姓名", "員工姓名"]) || "").trim(),
+          date,
+          start1,
+          end1,
+          start2,
+          end2,
+          totalText: timeText(totalRaw),
+          sourceOvertime: pick(row, ["加班時數", "加班", "延長工時"])
+        };
+        const totalHours = durationToHours(totalRaw) || estimateHours(base);
+        return {
+          ...base,
+          key: [base.employeeNo, base.attendanceNo, base.name].filter(Boolean).join("|") || "未命名員工",
+          totalHours,
+          overtimeHours: parseOvertime(base.sourceOvertime, totalHours)
+        };
+      }).filter((row) => row.date && row.name);
+    }
+
+    function datesInMonth(key) {
+      const [year, month] = key.split("-").map(Number);
+      const last = new Date(year, month, 0).getDate();
+      return Array.from({ length: last }, (_, index) => new Date(year, month - 1, index + 1));
+    }
+
+    function getReport() {
+      const month = monthSelect.value;
+      const requiredHours = Number(requiredHoursInput.value || 9);
+      const overtimeLimit = Number(overtimeLimitInput.value || 46);
+      const rows = rawRows.filter((row) => monthKey(row.date) === month);
+      const groups = new Map();
+
+      rows.forEach((row) => {
+        if (!groups.has(row.key)) {
+          groups.set(row.key, {
+            key: row.key,
+            name: row.name,
+            employeeNo: row.employeeNo,
+            attendanceNo: row.attendanceNo,
+            rows: []
+          });
+        }
+        groups.get(row.key).rows.push(row);
+      });
+
+      const people = Array.from(groups.values()).map((person) => {
+        const byDate = new Map();
+        person.rows.forEach((row) => byDate.set(formatDate(row.date), row));
+        let cumulativeOvertime = 0;
+        const days = datesInMonth(month).map((date) => {
+          const found = byDate.get(formatDate(date));
+          if (!found) {
+            return {
+              date,
+              absent: true,
+              short: false,
+              overtimeHours: 0,
+              cumulativeOvertime,
+              note: "未上班 / 休假"
+            };
+          }
+          cumulativeOvertime += found.overtimeHours;
+          const short = found.totalHours > 0 && found.totalHours < requiredHours;
+          return {
+            ...found,
+            absent: false,
+            short,
+            cumulativeOvertime,
+            note: short ? `未滿 ${requiredHours} 小時` : ""
+          };
+        });
+        return {
+          ...person,
+          days,
+          workDays: days.filter((day) => !day.absent).length,
+          absentDays: days.filter((day) => day.absent).length,
+          shortDays: days.filter((day) => day.short).length,
+          overtimeTotal: cumulativeOvertime,
+          overLimit: cumulativeOvertime > overtimeLimit
+        };
+      }).sort((a, b) => a.name.localeCompare(b.name, "zh-Hant"));
+
+      return { people, overtimeLimit };
+    }
+
+    function updateMonthOptions() {
+      const months = Array.from(new Set(rawRows.map((row) => monthKey(row.date)))).sort();
+      monthSelect.innerHTML = months.map((month) => `<option value="${month}">${month.replace("-", " 年 ")} 月</option>`).join("");
+    }
+
+    function render() {
+      if (!rawRows.length || !monthSelect.value) {
+        renderEmpty();
+        return;
+      }
+
+      const report = getReport();
+      const term = searchInput.value.trim().toLowerCase();
+      const people = report.people.filter((person) => {
+        const text = `${person.name} ${person.employeeNo} ${person.attendanceNo}`.toLowerCase();
+        return text.includes(term);
+      });
+
+      if (!people.some((person) => person.key === selectedEmployeeKey)) {
+        selectedEmployeeKey = people[0]?.key || "";
+      }
+
+      document.querySelector("#totalEmployees").textContent = String(report.people.length);
+      document.querySelector("#totalWorkDays").textContent = String(report.people.reduce((sum, person) => sum + person.workDays, 0));
+      document.querySelector("#totalAbsentDays").textContent = String(report.people.reduce((sum, person) => sum + person.absentDays, 0));
+      document.querySelector("#totalShortDays").textContent = String(report.people.reduce((sum, person) => sum + person.shortDays, 0));
+      document.querySelector("#totalOverLimit").textContent = String(report.people.filter((person) => person.overLimit).length);
+      document.querySelector("#employeeCount").textContent = `${people.length} 人`;
+
+      employeeList.innerHTML = people.map((person) => {
+        const badgeClass = person.overLimit ? "danger" : person.shortDays ? "warn" : "ok";
+        const badgeText = person.overLimit ? "超過46" : person.shortDays ? `${person.shortDays} 天未滿` : "正常";
+        return `
+          <button class="employee-row ${person.key === selectedEmployeeKey ? "active" : ""}" type="button" data-key="${escapeHtml(person.key)}">
+            <span>
+              <span class="employee-name">${escapeHtml(person.name)}</span>
+              <span class="employee-meta">${escapeHtml(person.employeeNo || "-")} / ${escapeHtml(person.attendanceNo || "-")}，上班 ${person.workDays} 天，未上班 ${person.absentDays} 天</span>
+            </span>
+            <span class="badge ${badgeClass}">${badgeText}</span>
+          </button>
+        `;
+      }).join("") || `<div class="empty">找不到符合的人員</div>`;
+
+      employeeList.querySelectorAll(".employee-row").forEach((button) => {
+        button.addEventListener("click", () => {
+          selectedEmployeeKey = button.dataset.key;
+          render();
+        });
+      });
+
+      renderDetail(report.people.find((person) => person.key === selectedEmployeeKey), report.overtimeLimit);
+      exportButton.disabled = false;
+    }
+
+    function renderDetail(person, overtimeLimit) {
+      if (!person) {
+        detailBody.innerHTML = `<tr><td colspan="11" class="empty">尚無人員資料</td></tr>`;
+        detailTitle.textContent = "每日明細";
+        detailSubtitle.textContent = "列出整個月份每日狀態";
+        monthOvertimeBadge.textContent = "月加班 0 小時";
+        monthOvertimeBadge.className = "badge";
+        return;
+      }
+
+      detailTitle.textContent = `${person.name} 每日明細`;
+      detailSubtitle.textContent = `員工序號 ${person.employeeNo || "-"} / 考勤號碼 ${person.attendanceNo || "-"}`;
+      monthOvertimeBadge.textContent = `月加班 ${formatHours(person.overtimeTotal)} 小時`;
+      monthOvertimeBadge.className = `badge ${person.overLimit ? "danger" : "ok"}`;
+
+      detailBody.innerHTML = person.days.map((day) => {
+        const status = day.absent ? "未上班 / 休假" : day.short ? "未滿時數" : "正常";
+        const statusClass = day.absent ? "warn" : day.short ? "danger" : "ok";
+        const rowClass = [day.absent ? "absent" : "", day.short ? "short" : "", day.overtimeHours > 0 ? "overtime" : ""].join(" ");
+        return `
+          <tr class="${rowClass}">
+            <td>${formatDate(day.date)}</td>
+            <td>星期${weekdays[day.date.getDay()]}</td>
+            <td class="status-cell"><span class="badge ${statusClass}">${status}</span></td>
+            <td>${escapeHtml(day.start1 || "")}</td>
+            <td>${escapeHtml(day.end1 || "")}</td>
+            <td>${escapeHtml(day.start2 || "")}</td>
+            <td>${escapeHtml(day.end2 || "")}</td>
+            <td class="hours">${day.absent ? "" : formatHours(day.totalHours)}</td>
+            <td class="overtime-cell">${day.overtimeHours ? formatHours(day.overtimeHours) : ""}</td>
+            <td>${day.cumulativeOvertime ? formatHours(day.cumulativeOvertime) : ""}</td>
+            <td>${escapeHtml(day.note || "")}${day.cumulativeOvertime > overtimeLimit ? "，月加班已超過上限" : ""}</td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function renderEmpty() {
+      document.querySelector("#totalEmployees").textContent = "0";
+      document.querySelector("#totalWorkDays").textContent = "0";
+      document.querySelector("#totalAbsentDays").textContent = "0";
+      document.querySelector("#totalShortDays").textContent = "0";
+      document.querySelector("#totalOverLimit").textContent = "0";
+      document.querySelector("#employeeCount").textContent = "0 人";
+      employeeList.innerHTML = `<div class="empty">請先匯入 Excel 或載入範例資料</div>`;
+      renderDetail(null, Number(overtimeLimitInput.value || 46));
+      exportButton.disabled = true;
+    }
+
+    function formatHours(value) {
+      return Number(value || 0).toFixed(2).replace(/\.00$/, "");
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      }[char]));
+    }
+
+    function loadWorkbook(workbook) {
+      const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(firstSheet, { defval: "", raw: true });
+      rawRows = normalizeRows(rows);
+      selectedEmployeeKey = "";
+      updateMonthOptions();
+      render();
+    }
+
+    fileInput.addEventListener("change", async (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      const buffer = await file.arrayBuffer();
+      const workbook = XLSX.read(buffer, { type: "array", cellDates: true });
+      loadWorkbook(workbook);
+    });
+
+    sampleButton.addEventListener("click", () => {
+      const worksheet = XLSX.utils.aoa_to_sheet(sampleRows);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "4月考勤");
+      loadWorkbook(workbook);
+    });
+
+    [searchInput, monthSelect, requiredHoursInput, overtimeLimitInput].forEach((control) => {
+      control.addEventListener("input", render);
+      control.addEventListener("change", render);
+    });
+
+    exportButton.addEventListener("click", () => {
+      const report = getReport();
+      const headers = ["月份", "員工序號", "考勤號碼", "姓名", "日期", "星期", "狀態", "合計小時", "加班時數", "月加班累計", "備註"];
+      const rows = [headers];
+      const styles = [];
+      const headerStyle = {
+        font: { bold: true, color: { rgb: "FFFFFF" } },
+        fill: { fgColor: { rgb: "2458A6" } },
+        alignment: { horizontal: "center", vertical: "center" },
+        border: thinBorder()
+      };
+      const normalStyle = {
+        border: thinBorder(),
+        alignment: { vertical: "center" }
+      };
+      const redStyle = {
+        ...normalStyle,
+        font: { color: { rgb: "C62828" }, bold: true }
+      };
+      const absentStyle = {
+        ...normalStyle,
+        font: { color: { rgb: "7D8794" } },
+        fill: { fgColor: { rgb: "FAFBFC" } }
+      };
+
+      styles.push(headers.map(() => headerStyle));
+      report.people.forEach((person) => {
+        person.days.forEach((day) => {
+          const overLimitAfterThisDay = day.cumulativeOvertime > report.overtimeLimit;
+          rows.push([
+            monthSelect.value,
+            person.employeeNo,
+            person.attendanceNo,
+            person.name,
+            formatDate(day.date),
+            `星期${weekdays[day.date.getDay()]}`,
+            day.absent ? "未上班/休假" : day.short ? "未滿時數" : "正常",
+            day.absent ? "" : formatHours(day.totalHours),
+            day.overtimeHours ? formatHours(day.overtimeHours) : "",
+            day.cumulativeOvertime ? formatHours(day.cumulativeOvertime) : "",
+            `${day.note || ""}${overLimitAfterThisDay ? "，月加班已超過上限" : ""}`
+          ]);
+
+          styles.push(headers.map((_, columnIndex) => {
+            if (day.absent) return absentStyle;
+            if (day.short && [6, 7, 10].includes(columnIndex)) return redStyle;
+            if (overLimitAfterThisDay && [8, 9, 10].includes(columnIndex)) return redStyle;
+            return normalStyle;
+          }));
+        });
+      });
+
+      const worksheet = XLSX.utils.aoa_to_sheet(rows);
+      Object.keys(worksheet).forEach((address) => {
+        if (address[0] === "!") return;
+        const cell = XLSX.utils.decode_cell(address);
+        worksheet[address].s = styles[cell.r]?.[cell.c] || normalStyle;
+      });
+      worksheet["!cols"] = [
+        { wch: 10 }, { wch: 10 }, { wch: 12 }, { wch: 10 }, { wch: 12 },
+        { wch: 8 }, { wch: 12 }, { wch: 10 }, { wch: 10 }, { wch: 12 }, { wch: 28 }
+      ];
+      worksheet["!freeze"] = { xSplit: 0, ySplit: 1 };
+
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "月結檢核");
+      XLSX.writeFile(workbook, `HR月結考勤檢核_${monthSelect.value}.xlsx`);
+    });
+
+    function thinBorder() {
+      return {
+        top: { style: "thin", color: { rgb: "D8DEE8" } },
+        right: { style: "thin", color: { rgb: "D8DEE8" } },
+        bottom: { style: "thin", color: { rgb: "D8DEE8" } },
+        left: { style: "thin", color: { rgb: "D8DEE8" } }
+      };
+    }
+
+    renderEmpty();
+  </script>
+</body>
+</html>
