@@ -675,8 +675,10 @@
         let cumulativeOvertime = 0;
         const days = datesInMonth(month).map((date) => {
           const found = byDate.get(formatDate(date));
-          if (!found) {
+          // 如果沒有找到該日資料，或者總工時 (totalHours) 為 0，則判定為未上班/休假
+          if (!found || found.totalHours === 0) {
             return {
+              ...(found || {}),
               date,
               absent: true,
               short: false,
