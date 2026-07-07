@@ -1,0 +1,11 @@
+# 忽略 Excel 與 CSV 考勤資料（保護員工隱私個資，防止誤傳 GitHub）
+*.xlsx
+*.xls
+*.csv
+
+# 忽略本地測試與開發產生檔案
+node_modules/
+package.json
+package-lock.json
+*.log
+.DS_Store

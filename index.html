@@ -401,6 +401,19 @@
     </header>
 
     <main>
+      <!-- 瀏覽器安全限制提醒橫幅 -->
+      <div id="fileProtocolWarning" class="hidden" style="background: var(--soft-amber); border: 1px solid var(--amber); border-radius: 6px; padding: 12px 16px; margin-bottom: 16px; color: var(--amber); font-size: 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; line-height: 1.6;">
+        <div>
+          <strong>⚠️ 瀏覽器安全限制提醒</strong>：您目前是直接雙擊 HTML 檔案開啟網頁（<code>file://</code> 協定）。受瀏覽器安全性限制，下載的 Excel 檔名會被瀏覽器強制改為英數亂碼且無副檔名。
+          <br>
+          <span style="font-size: 13px; margin-top: 4px; display: inline-block;">
+            <strong>解決方案 1</strong>：下載檔案後，請至下載資料夾將下載下來的檔案（如 <code>ef9cc84d...</code>）重新命名並加上 <code>.xlsx</code> 副檔名（例如：<code>HR月結檢核.xlsx</code>）即可正常開啟。<br>
+            <strong>解決方案 2</strong>：請雙擊執行專案資料夾中的 <code>啟動系統.bat</code> 開啟網頁，即可正常下載帶有檔名的 Excel 檔案。
+          </span>
+        </div>
+        <button onclick="this.parentElement.classList.add('hidden')" style="background: none; border: none; cursor: pointer; font-size: 18px; color: var(--amber); font-weight: bold; padding: 0 4px;">&times;</button>
+      </div>
+
       <section class="controls">
         <div class="field">
           <label for="searchInput">搜尋員工</label>
@@ -615,7 +628,11 @@
 
     function parseOvertime(value, totalHours) {
       if (value !== undefined && value !== null && String(value).trim()) {
-        const parts = String(value).match(/\d+(?:\.\d+)?/g);
+        const text = String(value).trim();
+        if (text.includes(":")) {
+          return durationToHours(text);
+        }
+        const parts = text.match(/\d+(?:\.\d+)?/g);
         if (parts) return parts.reduce((sum, part) => sum + Number(part), 0);
       }
       return Math.max(0, totalHours - Number(requiredHoursInput.value || 9));
@@ -624,11 +641,11 @@
     function normalizeRows(rows) {
       return rows.map((row) => {
         const date = excelDateToDate(pick(row, ["日期", "出勤日期", "考勤日期"]));
-        const start1 = timeText(pick(row, ["上班1", "上班一", "上班時間1", "上班"]));
-        const end1 = timeText(pick(row, ["下班1", "下班一", "下班時間1", "下班"]));
+        const start1 = timeText(pick(row, ["上班1", "上班一", "上班時間1", "上班", "簽到時間", "簽到"]));
+        const end1 = timeText(pick(row, ["下班1", "下班一", "下班時間1", "下班", "簽退時間", "簽退"]));
         const start2 = timeText(pick(row, ["上班2", "上班二", "上班時間2"]));
         const end2 = timeText(pick(row, ["下班2", "下班二", "下班時間2"]));
-        const totalRaw = pick(row, ["合計", "總工時", "時數", "工作時數"]);
+        const totalRaw = pick(row, ["合計", "總工時", "時數", "工作時數", "出勤時間"]);
         const base = {
           employeeNo: String(pick(row, ["員工序號", "員工編號", "工號"]) || "").trim(),
           attendanceNo: String(pick(row, ["考勤號碼", "考勤編號", "卡號"]) || "").trim(),
@@ -639,7 +656,7 @@
           start2,
           end2,
           totalText: timeText(totalRaw),
-          sourceOvertime: pick(row, ["加班時數", "加班", "延長工時"])
+          sourceOvertime: pick(row, ["加班時數", "加班", "延長工時", "加班時間"])
         };
         const totalHours = durationToHours(totalRaw) || estimateHours(base);
         return {
@@ -836,7 +853,30 @@
 
     function loadWorkbook(workbook) {
       const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-      const rows = XLSX.utils.sheet_to_json(firstSheet, { defval: "", raw: true });
+      
+      // 讀取為 2D 陣列以搜尋真實的標頭列 (Header Row)
+      const rangeAOA = XLSX.utils.sheet_to_json(firstSheet, { header: 1, defval: "" });
+      let headerRowIndex = 0;
+      
+      const nameColumns = ["姓名", "員工姓名"];
+      const dateColumns = ["日期", "出勤日期", "考勤日期"];
+      
+      for (let i = 0; i < Math.min(rangeAOA.length, 20); i++) {
+        const row = rangeAOA[i];
+        if (!Array.isArray(row)) continue;
+        
+        const rowValues = row.map(cell => normalizeHeader(cell));
+        const hasName = nameColumns.some(col => rowValues.includes(normalizeHeader(col)));
+        const hasDate = dateColumns.some(col => rowValues.includes(normalizeHeader(col)));
+        
+        if (hasName && hasDate) {
+          headerRowIndex = i;
+          break;
+        }
+      }
+      
+      // 從找到的標頭列開始解析 JSON
+      const rows = XLSX.utils.sheet_to_json(firstSheet, { range: headerRowIndex, defval: "", raw: true });
       rawRows = normalizeRows(rows);
       selectedEmployeeKey = "";
       updateMonthOptions();
@@ -929,7 +969,25 @@
 
       const workbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(workbook, worksheet, "月結檢核");
-      XLSX.writeFile(workbook, `HR月結考勤檢核_${monthSelect.value}.xlsx`);
+      
+      // 改用手動 Blob 下載方式，以確保檔案格式能正確下載並被 Excel 識別，且在 file:// 本地開啟環境下完全相容
+      const wbout = XLSX.write(workbook, { bookType: "xlsx", type: "binary" });
+      function s2ab(s) {
+        const buf = new ArrayBuffer(s.length);
+        const view = new Uint8Array(buf);
+        for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+        return buf;
+      }
+      
+      const blob = new Blob([s2ab(wbout)], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = blobUrl;
+      a.download = `HR月結考勤檢核_${monthSelect.value}.xlsx`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(blobUrl);
     });
 
     function thinBorder() {
@@ -942,6 +1000,13 @@
     }
 
     renderEmpty();
+
+    if (window.location.protocol === "file:") {
+      const warningBanner = document.getElementById("fileProtocolWarning");
+      if (warningBanner) {
+        warningBanner.classList.remove("hidden");
+      }
+    }
   </script>
 </body>
 </html>
