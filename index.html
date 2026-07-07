@@ -874,8 +874,7 @@
     exportButton.addEventListener("click", () => {
       const report = getReport();
       const headers = ["月份", "員工序號", "考勤號碼", "姓名", "日期", "星期", "狀態", "合計小時", "加班時數", "月加班累計", "備註"];
-      const rows = [headers];
-      const styles = [];
+      
       const headerStyle = {
         font: { bold: true, color: { rgb: "FFFFFF" } },
         fill: { fgColor: { rgb: "2458A6" } },
@@ -896,8 +895,13 @@
         fill: { fgColor: { rgb: "FAFBFC" } }
       };
 
-      styles.push(headers.map(() => headerStyle));
+      const workbook = XLSX.utils.book_new();
+      const usedSheetNames = new Set();
+
       report.people.forEach((person) => {
+        const rows = [headers];
+        const styles = [headers.map(() => headerStyle)];
+
         person.days.forEach((day) => {
           const overLimitAfterThisDay = day.cumulativeOvertime > report.overtimeLimit;
           rows.push([
@@ -921,22 +925,37 @@
             return normalStyle;
           }));
         });
-      });
 
-      const worksheet = XLSX.utils.aoa_to_sheet(rows);
-      Object.keys(worksheet).forEach((address) => {
-        if (address[0] === "!") return;
-        const cell = XLSX.utils.decode_cell(address);
-        worksheet[address].s = styles[cell.r]?.[cell.c] || normalStyle;
-      });
-      worksheet["!cols"] = [
-        { wch: 10 }, { wch: 10 }, { wch: 12 }, { wch: 10 }, { wch: 12 },
-        { wch: 8 }, { wch: 12 }, { wch: 10 }, { wch: 10 }, { wch: 12 }, { wch: 28 }
-      ];
-      worksheet["!freeze"] = { xSplit: 0, ySplit: 1 };
+        const worksheet = XLSX.utils.aoa_to_sheet(rows);
+        Object.keys(worksheet).forEach((address) => {
+          if (address[0] === "!") return;
+          const cell = XLSX.utils.decode_cell(address);
+          worksheet[address].s = styles[cell.r]?.[cell.c] || normalStyle;
+        });
 
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "月結檢核");
+        worksheet["!cols"] = [
+          { wch: 10 }, { wch: 10 }, { wch: 12 }, { wch: 10 }, { wch: 12 },
+          { wch: 8 }, { wch: 12 }, { wch: 10 }, { wch: 10 }, { wch: 12 }, { wch: 28 }
+        ];
+        worksheet["!freeze"] = { xSplit: 0, ySplit: 1 };
+
+        // 決定工作表名稱 (防範重複、長度上限及非法字元)
+        let sheetName = person.name.replace(/[\\/*?[\]]/g, "");
+        if (sheetName.length > 31) sheetName = sheetName.slice(0, 31);
+        if (usedSheetNames.has(sheetName)) {
+          sheetName = `${person.name}_${person.attendanceNo || ""}`.replace(/[\\/*?[\]]/g, "");
+          if (sheetName.length > 31) sheetName = sheetName.slice(0, 31);
+        }
+        let finalSheetName = sheetName;
+        let suffix = 1;
+        while (usedSheetNames.has(finalSheetName)) {
+          finalSheetName = `${sheetName.slice(0, 28)}_${suffix}`;
+          suffix++;
+        }
+        usedSheetNames.add(finalSheetName);
+
+        XLSX.utils.book_append_sheet(workbook, worksheet, finalSheetName);
+      });
       
       // 改用手動 Blob 下載方式，以確保檔案格式能正確下載並被 Excel 識別，且在 file:// 本地開啟環境下完全相容
       const wbout = XLSX.write(workbook, { bookType: "xlsx", type: "binary" });
