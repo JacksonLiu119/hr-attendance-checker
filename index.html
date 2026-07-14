@@ -875,7 +875,7 @@
 
     exportButton.addEventListener("click", () => {
       const report = getReport();
-      const headers = ["月份", "員工序號", "考勤號碼", "姓名", "日期", "星期", "狀態", "合計小時", "加班時數", "月加班累計", "備註"];
+      const headers = ["月份", "員工序號", "考勤號碼", "姓名", "日期", "星期", "狀態", "上班1", "下班1", "上班2", "下班2", "合計小時", "加班時數", "月加班累計", "備註"];
       
       const headerStyle = {
         font: { bold: true, color: { rgb: "FFFFFF" } },
@@ -914,6 +914,10 @@
             formatDate(day.date),
             `星期${weekdays[day.date.getDay()]}`,
             day.absent ? "未上班/休假" : day.short ? "未滿時數" : "正常",
+            day.start1 || "",
+            day.end1 || "",
+            day.start2 || "",
+            day.end2 || "",
             day.absent ? "" : formatHours(day.totalHours),
             day.overtimeHours ? formatHours(day.overtimeHours) : "",
             day.cumulativeOvertime ? formatHours(day.cumulativeOvertime) : "",
@@ -922,8 +926,8 @@
 
           styles.push(headers.map((_, columnIndex) => {
             if (day.absent) return absentStyle;
-            if (day.short && [6, 7, 10].includes(columnIndex)) return redStyle;
-            if (overLimitAfterThisDay && [8, 9, 10].includes(columnIndex)) return redStyle;
+            if (day.short && [6, 11, 14].includes(columnIndex)) return redStyle;
+            if (overLimitAfterThisDay && [12, 13, 14].includes(columnIndex)) return redStyle;
             return normalStyle;
           }));
         });
@@ -937,7 +941,8 @@
 
         worksheet["!cols"] = [
           { wch: 10 }, { wch: 10 }, { wch: 12 }, { wch: 10 }, { wch: 12 },
-          { wch: 8 }, { wch: 12 }, { wch: 10 }, { wch: 10 }, { wch: 12 }, { wch: 28 }
+          { wch: 8 }, { wch: 12 }, { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 10 },
+          { wch: 10 }, { wch: 10 }, { wch: 12 }, { wch: 28 }
         ];
         worksheet["!freeze"] = { xSplit: 0, ySplit: 1 };
 
