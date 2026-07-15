@@ -1,7 +1,6 @@
-<!doctype html>
-<html lang="zh-Hant">
-<head>
-  <meta charset="utf-8">
+<!DOCTYPE html>
+<!-- saved from url=(0118)file:///C:/Users/jacks/OneDrive/%E6%96%87%E4%BB%B6/%E4%BB%99%E6%9A%89HR%E5%A0%B1%E8%A1%A8%E5%B0%88%E6%A1%88/index.html -->
+<html lang="zh-Hant"><head><meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>仙暉 HR 月結考勤檢核</title>
   <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
@@ -77,6 +76,57 @@
       font-size: 14px;
       margin-top: 3px;
     }
+
+    .main-nav { max-width: 1480px; margin: 14px auto 0; display: flex; gap: 8px; border-top: 1px solid var(--line); padding-top: 12px; }
+
+    .nav-button { border: 1px solid transparent; background: transparent; color: var(--muted); border-radius: 6px; padding: 8px 14px; cursor: pointer; font-weight: 700; }
+
+    .nav-button:hover, .nav-button.active { background: #eef4ff; color: var(--blue); border-color: #c9d9f6; }
+
+    .page-view.hidden { display: none; }
+
+    .architecture { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-bottom: 18px; }
+
+    .architecture-card { background: var(--panel); border: 1px solid var(--line); border-top: 4px solid var(--blue); border-radius: 8px; padding: 18px; min-height: 142px; min-width: 0; overflow: hidden; box-shadow: var(--shadow); }
+    .architecture-card:nth-child(2) { border-top-color: var(--green); }
+    .architecture-card:nth-child(3) { border-top-color: var(--amber); }
+    .shift-card { min-height: 360px; }
+    .holiday-settings { display: grid; gap: 10px; margin-top: 14px; }
+    .holiday-form { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr) minmax(92px, .8fr) auto; gap: 8px; align-items: center; }
+    .holiday-form input, .holiday-form select { min-height: 36px; border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; }
+    .holiday-list { display: grid; gap: 6px; max-height: 180px; overflow: auto; }
+    .holiday-item { display: grid; grid-template-columns: 92px minmax(0, 1fr) 82px auto; gap: 8px; align-items: center; min-width: 0; padding: 7px 8px; border: 1px solid var(--line); border-radius: 6px; font-size: 13px; }
+    .holiday-item strong { min-width: 0; overflow-wrap: anywhere; }
+    .holiday-item .holiday-type { color: var(--muted); }
+    .holiday-item .button { min-height: 32px; padding: 6px 8px; }
+
+    .import-actions { display: flex; align-items: center; gap: 10px; justify-content: flex-start; margin-bottom: 14px; }
+    .report-actions { display: flex; gap: 10px; margin-bottom: 16px; }
+    .report-action { border: 1px solid var(--line); background: var(--panel); color: var(--muted); border-radius: 6px; padding: 10px 18px; cursor: pointer; font-weight: 700; }
+    .report-action.active, .report-action:hover { background: #eef4ff; border-color: #c9d9f6; color: var(--blue); }
+    .report-page.hidden { display: none; }
+    .report-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; color: var(--muted); font-size: 14px; }
+
+    .architecture-card h2 { font-size: 18px; margin: 0 0 8px; }
+    .architecture-card p { color: var(--muted); margin: 0; font-size: 14px; }
+
+    .placeholder-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .placeholder-panel { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 20px; min-height: 170px; }
+    .placeholder-panel h2 { margin: 0 0 8px; font-size: 18px; }
+    .placeholder-panel p { margin: 0; color: var(--muted); }
+    .setting-option { display: flex; align-items: flex-start; gap: 10px; margin-top: 14px; color: var(--ink); }
+    .setting-option input { width: 18px; height: 18px; margin-top: 2px; accent-color: var(--blue); }
+    .shift-settings { display: grid; gap: 8px; margin-top: 14px; }
+    .shift-row { display: grid; grid-template-columns: minmax(120px, 1fr) 110px 110px auto; gap: 8px; align-items: center; }
+    .shift-row input { min-height: 36px; border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; }
+    .shift-row .button { min-height: 36px; padding: 6px 10px; }
+    .shift-heading { display: grid; grid-template-columns: minmax(120px, 1fr) 110px 110px auto; gap: 8px; color: var(--muted); font-size: 12px; font-weight: 700; }
+    .shift-add { margin-top: 8px; }
+    .rule-setting { display: grid; grid-template-columns: minmax(0, 1fr) 120px; gap: 8px; align-items: center; margin-top: 16px; }
+    .rule-setting input { min-height: 36px; border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; }
+    .rule-setting small { grid-column: 1 / -1; color: var(--muted); }
+    .shift-select { border: 1px solid transparent; border-radius: 5px; background: transparent; color: inherit; padding: 4px 6px; min-width: 108px; }
+    .shift-select:focus { border-color: var(--blue); outline: 2px solid #c9d9f6; }
 
     .toolbar {
       display: flex;
@@ -313,6 +363,13 @@
       font-weight: 800;
     }
 
+    tr.over-limit td.overtime-cell,
+    tr.over-limit td.cumulative-cell,
+    tr.over-limit td.note-cell {
+      color: var(--red);
+      font-weight: 800;
+    }
+
     .status-cell .badge {
       border-radius: 6px;
     }
@@ -362,6 +419,7 @@
     }
 
     @media (max-width: 680px) {
+      .architecture, .placeholder-grid { grid-template-columns: 1fr; }
       header,
       main {
         padding-left: 14px;
@@ -387,32 +445,35 @@
       <div class="header-inner">
         <div>
           <h1>仙暉 HR 月結考勤檢核</h1>
-          <div class="subhead">匯入考勤 Excel 後，自動補齊整月日期、標示未滿 9 小時與加班 46 小時門檻</div>
+
         </div>
-        <div class="toolbar">
-          <label class="file-label">
-            匯入 Excel
-            <input id="fileInput" type="file" accept=".xlsx,.xls,.csv">
-          </label>
-          <button id="exportButton" class="button primary" type="button" disabled>匯出檢核 Excel</button>
-        </div>
+        <div class="toolbar hidden"></div>
       </div>
+      <nav class="main-nav" aria-label="主功能導覽">
+        <button class="nav-button" type="button" data-view="settingsView" onclick="showView(this.dataset.view)">基本設定</button>
+        <button class="nav-button active" type="button" data-view="importView" onclick="showView(this.dataset.view)">匯入主頁</button>
+      </nav>
     </header>
 
     <main>
-      <!-- 瀏覽器安全限制提醒橫幅 -->
-      <div id="fileProtocolWarning" class="hidden" style="background: var(--soft-amber); border: 1px solid var(--amber); border-radius: 6px; padding: 12px 16px; margin-bottom: 16px; color: var(--amber); font-size: 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; line-height: 1.6;">
-        <div>
-          <strong>⚠️ 瀏覽器安全限制提醒</strong>：您目前是直接雙擊 HTML 檔案開啟網頁（<code>file://</code> 協定）。受瀏覽器安全性限制，下載的 Excel 檔名會被瀏覽器強制改為英數亂碼且無副檔名。
-          <br>
-          <span style="font-size: 13px; margin-top: 4px; display: inline-block;">
-            <strong>解決方案 1</strong>：下載檔案後，請至下載資料夾將下載下來的檔案（如 <code>ef9cc84d...</code>）重新命名並加上 <code>.xlsx</code> 副檔名（例如：<code>HR月結檢核.xlsx</code>）即可正常開啟。<br>
-            <strong>解決方案 2</strong>：請雙擊執行專案資料夾中的 <code>啟動系統.bat</code> 開啟網頁，即可正常下載帶有檔名的 Excel 檔案。
-          </span>
+      <section id="settingsView" class="page-view hidden">
+        <div class="architecture">
+          <article class="architecture-card shift-card"><h2>設定班別</h2><p>維護班別名稱、起始時間與結束時間。</p><div class="shift-settings"><div class="shift-heading"><span>班別名稱</span><span>起始時間</span><span>結束時間</span><span></span></div><div id="shiftSettingsBody"><div class="shift-row" data-index="0"><input data-field="name" type="text" value="A班" aria-label="班別名稱"><input data-field="start" type="time" value="08:00" aria-label="班別起始時間"><input data-field="end" type="time" value="16:00" aria-label="班別結束時間"><button class="button" type="button" data-remove-shift="0">刪除</button></div><div class="shift-row" data-index="1"><input data-field="name" type="text" value="正常班" aria-label="班別名稱"><input data-field="start" type="time" value="08:00" aria-label="班別起始時間"><input data-field="end" type="time" value="17:30" aria-label="班別結束時間"><button class="button" type="button" data-remove-shift="1">刪除</button></div></div><button id="addShiftButton" class="button shift-add" type="button">新增班別</button></div></article>
+          <article class="architecture-card holiday-card"><h2>設定假日</h2><p>已內建目前年度政府辦公日曆，可手動新增 2027 年及後續年度的國定假日或颱風假。</p><div class="holiday-settings"><div class="holiday-form"><input id="holidayDateInput" type="date" aria-label="假日日期"><input id="holidayNameInput" type="text" placeholder="假日名稱"><select id="holidayTypeInput" aria-label="假日類型"><option value="national">國定假日</option><option value="typhoon">颱風假</option></select><button id="addHolidayButton" class="button" type="button">新增假日</button></div><div id="holidayList" class="holiday-list"><div class="holiday-item"><span>2026-01-01</span><strong>元旦</strong><span class="holiday-type">國定假日</span><button class="button" type="button" data-remove-holiday="0">刪除</button></div><div class="holiday-item"><span>2026-02-16</span><strong>春節</strong><span class="holiday-type">國定假日</span><button class="button" type="button" data-remove-holiday="1">刪除</button></div><div class="holiday-item"><span>2026-02-17</span><strong>春節</strong><span class="holiday-type">國定假日</span><button class="button" type="button" data-remove-holiday="2">刪除</button></div><div class="holiday-item"><span>2026-02-18</span><strong>春節</strong><span class="holiday-type">國定假日</span><button class="button" type="button" data-remove-holiday="3">刪除</button></div><div class="holiday-item"><span>2026-02-19</span><strong>春節</strong><span class="holiday-type">國定假日</span><button class="button" type="button" data-remove-holiday="4">刪除</button></div><div class="holiday-item"><span>2026-02-20</span><strong>春節</strong><span class="holiday-type">國定假日</span><button class="button" type="button" data-remove-holiday="5">刪除</button></div><div class="holiday-item"><span>2026-02-27</span><strong>和平紀念日補假</strong><span class="holiday-type">國定假日</span><button class="button" type="button" data-remove-holiday="6">刪除</button></div><div class="holiday-item"><span>2026-04-03</span><strong>兒童節及清明節連假</strong><span class="holiday-type">國定假日</span><button class="button" type="button" data-remove-holiday="7">刪除</button></div><div class="holiday-item"><span>2026-04-06</span><strong>兒童節及清明節連假</strong><span class="holiday-type">國定假日</span><button class="button" type="button" data-remove-holiday="8">刪除</button></div><div class="holiday-item"><span>2026-05-01</span><strong>勞動節</strong><span class="holiday-type">國定假日</span><button class="button" type="button" data-remove-holiday="9">刪除</button></div><div class="holiday-item"><span>2026-06-19</span><strong>端午節</strong><span class="holiday-type">國定假日</span><button class="button" type="button" data-remove-holiday="10">刪除</button></div><div class="holiday-item"><span>2026-09-25</span><strong>中秋節及教師節連假</strong><span class="holiday-type">國定假日</span><button class="button" type="button" data-remove-holiday="11">刪除</button></div><div class="holiday-item"><span>2026-09-28</span><strong>孔子誕辰紀念日／教師節</strong><span class="holiday-type">國定假日</span><button class="button" type="button" data-remove-holiday="12">刪除</button></div><div class="holiday-item"><span>2026-10-09</span><strong>國慶日補假</strong><span class="holiday-type">國定假日</span><button class="button" type="button" data-remove-holiday="13">刪除</button></div><div class="holiday-item"><span>2026-10-26</span><strong>臺灣光復暨金門古寧頭大捷紀念日補假</strong><span class="holiday-type">國定假日</span><button class="button" type="button" data-remove-holiday="14">刪除</button></div><div class="holiday-item"><span>2026-12-25</span><strong>行憲紀念日</strong><span class="holiday-type">國定假日</span><button class="button" type="button" data-remove-holiday="15">刪除</button></div></div></div></article>
+          <article class="architecture-card"><h2>月結規則</h2><p>設定每月加班時數的醒目提示門檻。</p><div class="rule-setting"><label for="overtimeLimit">月加班上限</label><input id="overtimeLimit" type="number" min="0" step="1" value="46"><small>超過此時數後，月加班累計與備註會以紅色標示。</small></div></article>
         </div>
-        <button onclick="this.parentElement.classList.add('hidden')" style="background: none; border: none; cursor: pointer; font-size: 18px; color: var(--amber); font-weight: bold; padding: 0 4px;">&times;</button>
-      </div>
+        <div class="placeholder-grid">
+          <section class="placeholder-panel"><h2>其他功能</h2><p>放置加班計算與資料來源等共用設定。</p><label class="setting-option"><input id="floorOvertimeCheckbox" type="checkbox"><span><strong>加班時數無條件捨去小數</strong><br><small>勾選後，0.97 小時算 0 小時，2.9 小時算 2 小時，再累計月加班。</small></span></label></section>
+          <section class="placeholder-panel"><h2>資料來源設定</h2><p>此區預留考勤 Excel 欄位對應與匯入格式說明。</p></section>
+        </div>
+      </section>
 
+      <section id="importView" class="page-view">
+<div class="import-actions">
+  <label class="file-label">匯入 Excel<input id="fileInput" type="file" accept=".xlsx,.xls,.csv"></label>
+  <button id="exportButton" class="button primary" type="button" disabled>正常報表 A 表</button>
+  <button id="complianceButton" class="button" type="button" disabled>符合勞檢 B 表</button>
+</div>
       <section class="controls">
         <div class="field">
           <label for="searchInput">搜尋員工</label>
@@ -421,14 +482,6 @@
         <div class="field">
           <label for="monthSelect">月結月份</label>
           <select id="monthSelect"></select>
-        </div>
-        <div class="field">
-          <label for="requiredHours">每日應滿時數</label>
-          <input id="requiredHours" type="number" min="0" step="0.5" value="9">
-        </div>
-        <div class="field">
-          <label for="overtimeLimit">月加班上限</label>
-          <input id="overtimeLimit" type="number" min="0" step="1" value="46">
         </div>
       </section>
 
@@ -461,9 +514,7 @@
             <div class="panel-title">月結人員</div>
             <span id="employeeCount" class="badge">0 人</span>
           </div>
-          <div id="employeeList" class="employee-list">
-            <div class="empty">請先匯入 Excel 或載入範例資料</div>
-          </div>
+          <div id="employeeList" class="employee-list"><div class="empty">請先匯入 Excel 或載入範例資料</div></div>
         </aside>
 
         <section class="panel">
@@ -477,47 +528,237 @@
           <div class="table-wrap">
             <table>
               <thead>
-                <tr>
-                  <th>日期</th>
-                  <th>星期</th>
-                  <th>狀態</th>
-                  <th>上班1</th>
-                  <th>下班1</th>
-                  <th>上班2</th>
-                  <th>下班2</th>
-                  <th>合計</th>
-                  <th>加班時數</th>
-                  <th>月加班累計</th>
-                  <th>備註</th>
-                </tr>
-              </thead>
-              <tbody id="detailBody">
-                <tr><td colspan="11" class="empty">尚無資料</td></tr>
-              </tbody>
+              <tr>
+                <th>日期</th>
+                <th>星期</th>
+                <th>班別</th>
+                <th>狀態</th>
+                <th>上班1</th>
+                <th>下班1</th>
+                <th>上班2</th>
+                <th>下班2</th>
+                <th>合計</th>
+                <th>加班時數</th>
+                <th>月加班累計</th>
+                <th>備註</th>
+              </tr>
+            </thead>
+              <tbody id="detailBody"><tr><td colspan="12" class="empty">尚無人員資料</td></tr></tbody>
             </table>
           </div>
           <div class="note">欄位名稱可使用「員工序號、考勤號碼、姓名、日期、上班1、下班1、上班2、下班2、合計、加班時數」；若缺少合計，系統會用打卡時間估算。</div>
         </section>
       </section>
-    </main>
+
+          </section></main>
   </div>
 
   <script>
     const weekdays = ["日", "一", "二", "三", "四", "五", "六"];
     const fileInput = document.querySelector("#fileInput");
     const exportButton = document.querySelector("#exportButton");
+    const complianceButton = document.querySelector("#complianceButton");
     const searchInput = document.querySelector("#searchInput");
     const monthSelect = document.querySelector("#monthSelect");
-    const requiredHoursInput = document.querySelector("#requiredHours");
     const overtimeLimitInput = document.querySelector("#overtimeLimit");
+    const floorOvertimeCheckbox = document.querySelector("#floorOvertimeCheckbox");
+    floorOvertimeCheckbox.checked = localStorage.getItem("hr-floor-overtime") === "true";
     const employeeList = document.querySelector("#employeeList");
     const detailBody = document.querySelector("#detailBody");
     const detailTitle = document.querySelector("#detailTitle");
     const detailSubtitle = document.querySelector("#detailSubtitle");
     const monthOvertimeBadge = document.querySelector("#monthOvertimeBadge");
+    const holidayDateInput = document.querySelector("#holidayDateInput");
+    const holidayNameInput = document.querySelector("#holidayNameInput");
+    const holidayTypeInput = document.querySelector("#holidayTypeInput");
+    const addHolidayButton = document.querySelector("#addHolidayButton");
+    const holidayList = document.querySelector("#holidayList");
+    const shiftSettingsBody = document.querySelector("#shiftSettingsBody");
+    const addShiftButton = document.querySelector("#addShiftButton");
+
+    addShiftButton.addEventListener("click", () => {
+      shifts.push({ name: "班別" + (shifts.length + 1), start: "08:00", end: "17:00" });
+      localStorage.setItem("hr-shifts", JSON.stringify(shifts));
+      renderShiftSettings();
+      render();
+    });
+
+    function showView(viewId) {
+      document.querySelectorAll(".page-view").forEach((view) => {
+        view.classList.add("hidden");
+      });
+      document.querySelectorAll(".nav-button").forEach((button) => button.classList.remove("active"));
+      const view = document.getElementById(viewId);
+      const button = document.querySelector('.nav-button[data-view="' + viewId + '"]');
+      if (view) {
+        view.classList.remove("hidden");
+      }
+      if (button) button.classList.add("active");
+    }
+
+
+    addHolidayButton.addEventListener("click", () => {
+      addHoliday({ date: holidayDateInput.value, name: holidayNameInput.value.trim(), type: holidayTypeInput.value });
+      holidayDateInput.value = "";
+      holidayNameInput.value = "";
+    });
+
+
+    document.querySelectorAll(".nav-button").forEach((button) => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll(".nav-button").forEach((item) => item.classList.remove("active"));
+        showView(button.dataset.view);
+      });
+    });
 
     let rawRows = [];
     let selectedEmployeeKey = "";
+    let shiftOverrides = JSON.parse(localStorage.getItem("hr-shift-overrides") || "{}");
+    const defaultShifts = [
+      { name: "A班", start: "08:00", end: "16:00" },
+      { name: "正常班", start: "08:00", end: "17:30" }
+    ];
+    let shifts = loadShifts();
+    let holidays;
+
+    const defaultHolidays = [
+      { date: "2026-01-01", name: "元旦", type: "national" },
+      { date: "2026-02-16", name: "春節", type: "national" },
+      { date: "2026-02-17", name: "春節", type: "national" },
+      { date: "2026-02-18", name: "春節", type: "national" },
+      { date: "2026-02-19", name: "春節", type: "national" },
+      { date: "2026-02-20", name: "春節", type: "national" },
+      { date: "2026-02-27", name: "和平紀念日補假", type: "national" },
+      { date: "2026-04-03", name: "兒童節及清明節連假", type: "national" },
+      { date: "2026-04-06", name: "兒童節及清明節連假", type: "national" },
+      { date: "2026-05-01", name: "勞動節", type: "national" },
+      { date: "2026-06-19", name: "端午節", type: "national" },
+      { date: "2026-09-25", name: "中秋節及教師節連假", type: "national" },
+      { date: "2026-09-28", name: "孔子誕辰紀念日／教師節", type: "national" },
+      { date: "2026-10-09", name: "國慶日補假", type: "national" },
+      { date: "2026-10-26", name: "臺灣光復暨金門古寧頭大捷紀念日補假", type: "national" },
+      { date: "2026-12-25", name: "行憲紀念日", type: "national" }
+    ];
+    function loadHolidays() {
+      try {
+        const saved = JSON.parse(localStorage.getItem("hr-holidays") || "[]");
+        const existing = Array.isArray(saved) ? saved : [];
+        const merged = new Map(defaultHolidays.map((holiday) => [holiday.date, holiday]));
+        existing.forEach((holiday) => {
+          if (holiday && holiday.date) merged.set(holiday.date, holiday);
+        });
+        return Array.from(merged.values());
+      } catch (error) {
+        console.warn("假日設定讀取失敗", error);
+        return [];
+      }
+    }
+
+    holidays = loadHolidays();
+
+    function dateKey(date) {
+      return date ? date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0") + "-" + String(date.getDate()).padStart(2, "0") : "";
+    }
+
+    function saveHolidays() {
+      holidays.sort((a, b) => a.date.localeCompare(b.date));
+      localStorage.setItem("hr-holidays", JSON.stringify(holidays));
+      renderHolidaySettings();
+      render();
+    }
+
+    function renderHolidaySettings() {
+      holidayList.innerHTML = holidays.map((holiday, index) => '<div class="holiday-item">' +
+        '<span>' + holiday.date + '</span><strong>' + escapeHtml(holiday.name) + '</strong>' +
+        '<span class="holiday-type">' + (holiday.type === "typhoon" ? "颱風假" : "國定假日") + '</span>' +
+        '<button class="button" type="button" data-remove-holiday="' + index + '">刪除</button></div>').join("") ||
+        '<div class="employee-meta">尚未設定假日</div>';
+      holidayList.querySelectorAll("[data-remove-holiday]").forEach((button) => button.addEventListener("click", () => {
+        holidays.splice(Number(button.dataset.removeHoliday), 1);
+        saveHolidays();
+      }));
+    }
+
+    function getHolidayForDate(date) {
+      return holidays.find((holiday) => holiday.date === dateKey(date)) || null;
+    }
+
+    function addHoliday(holiday) {
+      if (!holiday.date) return;
+      holidays = holidays.filter((item) => item.date !== holiday.date);
+      holidays.push({
+        date: holiday.date,
+        name: holiday.name || "未命名假日",
+        type: holiday.type === "typhoon" ? "typhoon" : "national"
+      });
+      saveHolidays();
+    }
+
+
+    renderHolidaySettings();
+
+    function loadShifts() {
+      try {
+        const saved = JSON.parse(localStorage.getItem("hr-shifts") || "null");
+        if (Array.isArray(saved) && saved.length) return saved;
+      } catch (error) {
+        console.warn("班別設定讀取失敗", error);
+      }
+      return defaultShifts.map((shift) => ({ ...shift }));
+    }
+
+    function saveShifts() {
+      shifts = Array.from(document.querySelectorAll(".shift-row")).map((row) => ({
+        name: row.querySelector("[data-field=name]").value.trim() || "未命名班別",
+        start: row.querySelector("[data-field=start]").value || "08:00",
+        end: row.querySelector("[data-field=end]").value || "17:00"
+      }));
+      localStorage.setItem("hr-shifts", JSON.stringify(shifts));
+      render();
+    }
+
+    function renderShiftSettings() {
+      shiftSettingsBody.innerHTML = shifts.map((shift, index) => {
+        const safeName = escapeHtml(shift.name);
+        return '<div class="shift-row" data-index="' + index + '">' +
+          '<input data-field="name" type="text" value="' + safeName + '" aria-label="班別名稱">' +
+          '<input data-field="start" type="time" value="' + shift.start + '" aria-label="班別起始時間">' +
+          '<input data-field="end" type="time" value="' + shift.end + '" aria-label="班別結束時間">' +
+          '<button class="button" type="button" data-remove-shift="' + index + '">刪除</button>' +
+          '</div>';
+      }).join("");
+      shiftSettingsBody.querySelectorAll("input").forEach((input) => input.addEventListener("change", saveShifts));
+      shiftSettingsBody.querySelectorAll("[data-remove-shift]").forEach((button) => button.addEventListener("click", () => {
+        if (shifts.length <= 1) return;
+        shifts.splice(Number(button.dataset.removeShift), 1);
+        localStorage.setItem("hr-shifts", JSON.stringify(shifts));
+        renderShiftSettings();
+        render();
+      }));
+    }
+
+    function shiftHours(shift) {
+      const start = parseClockMinutes(shift.start);
+      const end = parseClockMinutes(shift.end);
+      if (start === null || end === null) return 9;
+      return Math.max(0, end - start) / 60;
+    }
+
+    function getShiftForDay(person, date) {
+      const key = person.key + "|" + formatDate(date);
+      const override = shiftOverrides[key];
+      return shifts.find((shift) => shift.name === override) || shifts[0] || defaultShifts[0];
+    }
+
+    function calculateShiftOvertime(row, shift) {
+      if (!shift) return applyOvertimeRule(row.overtimeHours);
+      const shiftEnd = parseClockMinutes(shift.end);
+      const actualEnds = [row.end1, row.end2].map(parseClockMinutes).filter((value) => value !== null);
+      if (shiftEnd === null || !actualEnds.length) return 0;
+      return applyOvertimeRule(Math.max(0, Math.max(...actualEnds) - shiftEnd) / 60);
+    }
+
+    renderShiftSettings();
 
     function normalizeHeader(value) {
       return String(value || "").replace(/\s+/g, "").trim();
@@ -544,8 +785,11 @@
       }
       const text = String(value || "").trim();
       if (!text) return null;
-      const match = text.match(/(\d{4})[\/\-\.](\d{1,2})[\/\-\.](\d{1,2})/);
-      if (match) return new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+      const match = text.match(/(\d{2,4})\\s*[\\/\\-\\.年]\\s*(\d{1,2})\\s*[\\/\\-\\.月]\\s*(\d{1,2})\\s*日?/);
+      if (match) {
+        const year = Number(match[1]);
+        return new Date(year < 1911 ? year + 1911 : year, Number(match[2]) - 1, Number(match[3]));
+      }
       const parsed = new Date(text);
       return Number.isNaN(parsed.getTime()) ? null : parsed;
     }
@@ -601,6 +845,30 @@
       }, 0);
     }
 
+    function calculateShiftTotalHours(row, shift) {
+      if (!row) return 0;
+      const shiftStart = parseClockMinutes(shift?.start);
+      const pairs = [
+        [row.start1, row.end1],
+        [row.start2, row.end2]
+      ];
+      let total = 0;
+      let hasTimePair = false;
+      pairs.forEach(([startText, endText], index) => {
+        let start = parseClockMinutes(startText);
+        const end = parseClockMinutes(endText);
+        if (start === null || end === null) return;
+        if (index === 0 && shiftStart !== null) start = Math.max(start, shiftStart);
+        total += Math.max(0, end - start) / 60;
+        hasTimePair = true;
+      });
+      return hasTimePair ? total : Number(row.totalHours || 0);
+    }
+    function applyOvertimeRule(value) {
+      const hours = Number(value || 0);
+      return floorOvertimeCheckbox.checked ? Math.floor(hours) : hours;
+    }
+
     function parseOvertime(value, totalHours) {
       if (value !== undefined && value !== null && String(value).trim()) {
         const text = String(value).trim();
@@ -610,7 +878,7 @@
         const parts = text.match(/\d+(?:\.\d+)?/g);
         if (parts) return parts.reduce((sum, part) => sum + Number(part), 0);
       }
-      return Math.max(0, totalHours - Number(requiredHoursInput.value || 9));
+      return Math.max(0, totalHours - 9);
     }
 
     function normalizeRows(rows) {
@@ -651,7 +919,7 @@
 
     function getReport() {
       const month = monthSelect.value;
-      const requiredHours = Number(requiredHoursInput.value || 9);
+      const requiredHours = 9;
       const overtimeLimit = Number(overtimeLimitInput.value || 46);
       const rows = rawRows.filter((row) => monthKey(row.date) === month);
       const groups = new Map();
@@ -675,26 +943,42 @@
         let cumulativeOvertime = 0;
         const days = datesInMonth(month).map((date) => {
           const found = byDate.get(formatDate(date));
+          const shift = getShiftForDay(person, date);
+          const countedTotalHours = found ? calculateShiftTotalHours(found, shift) : 0;
+          const weekend = [0, 6].includes(date.getDay());
+          const holiday = getHolidayForDate(date);
+          const holidayOvertime = Boolean(holiday);
           // 如果沒有找到該日資料，或者總工時 (totalHours) 為 0，則判定為未上班/休假
-          if (!found || found.totalHours === 0) {
+          if (!found || countedTotalHours === 0) {
             return {
               ...(found || {}),
               date,
               absent: true,
               short: false,
+              weekendOvertime: false,
+              holidayOvertime: Boolean(holiday),
+              holiday,
               overtimeHours: 0,
               cumulativeOvertime,
-              note: "未上班 / 休假"
+              note: holiday ? holiday.name + " / 未上班" : "未上班 / 休假"
             };
           }
-          cumulativeOvertime += found.overtimeHours;
-          const short = found.totalHours > 0 && found.totalHours < requiredHours;
+          const weekendOvertime = weekend;
+          const overtimeHours = (weekend || holidayOvertime) ? applyOvertimeRule(countedTotalHours) : calculateShiftOvertime(found, shift);
+          cumulativeOvertime += overtimeHours;
+          const short = countedTotalHours > 0 && countedTotalHours < shiftHours(shift);
           return {
             ...found,
+            shift,
+            totalHours: countedTotalHours,
+            weekendOvertime,
+            holidayOvertime,
+            holiday,
+            overtimeHours,
             absent: false,
             short,
             cumulativeOvertime,
-            note: short ? `未滿 ${requiredHours} 小時` : ""
+            note: holidayOvertime ? holiday.name + "出勤全數計加班" : weekendOvertime ? "週末出勤全數計加班" : short ? "未滿 " + formatHours(shiftHours(shift)) + " 小時" : ""
           };
         });
         return {
@@ -763,11 +1047,12 @@
 
       renderDetail(report.people.find((person) => person.key === selectedEmployeeKey), report.overtimeLimit);
       exportButton.disabled = false;
+      complianceButton.disabled = false;
     }
 
     function renderDetail(person, overtimeLimit) {
       if (!person) {
-        detailBody.innerHTML = `<tr><td colspan="11" class="empty">尚無人員資料</td></tr>`;
+        detailBody.innerHTML = `<tr><td colspan="12" class="empty">尚無人員資料</td></tr>`;
         detailTitle.textContent = "每日明細";
         detailSubtitle.textContent = "列出整個月份每日狀態";
         monthOvertimeBadge.textContent = "月加班 0 小時";
@@ -781,25 +1066,35 @@
       monthOvertimeBadge.className = `badge ${person.overLimit ? "danger" : "ok"}`;
 
       detailBody.innerHTML = person.days.map((day) => {
-        const status = day.absent ? "未上班 / 休假" : day.short ? "未滿時數" : "正常";
-        const statusClass = day.absent ? "warn" : day.short ? "danger" : "ok";
-        const rowClass = [day.absent ? "absent" : "", day.short ? "short" : "", day.overtimeHours > 0 ? "overtime" : ""].join(" ");
+        const status = day.absent ? (day.holiday ? (day.holiday.type === "typhoon" ? "颱風假" : "國定假日") : "未上班 / 休假") : day.holidayOvertime ? (day.holiday?.type === "typhoon" ? "颱風假加班" : "國定假日加班") : day.weekendOvertime ? "週末加班" : day.short ? "未滿時數" : "正常";
+        const statusClass = day.absent ? "warn" : day.holidayOvertime || day.weekendOvertime || day.short ? "danger" : "ok";
+        const rowClass = [day.absent ? "absent" : "", day.short ? "short" : "", day.overtimeHours > 0 ? "overtime" : "", day.cumulativeOvertime > overtimeLimit ? "over-limit" : ""].join(" ");
         return `
           <tr class="${rowClass}">
             <td>${formatDate(day.date)}</td>
             <td>星期${weekdays[day.date.getDay()]}</td>
-            <td class="status-cell"><span class="badge ${statusClass}">${status}</span></td>
+            <td class="shift-cell"><select class="shift-select" data-date="${formatDate(day.date)}" data-shift="${escapeHtml(day.shift?.name || "")}" aria-label="班別"></select></td><td class="status-cell"><span class="badge ${statusClass}">${status}</span></td>
             <td>${escapeHtml(day.start1 || "")}</td>
             <td>${escapeHtml(day.end1 || "")}</td>
             <td>${escapeHtml(day.start2 || "")}</td>
             <td>${escapeHtml(day.end2 || "")}</td>
             <td class="hours">${day.absent ? "" : formatHours(day.totalHours)}</td>
             <td class="overtime-cell">${day.overtimeHours ? formatHours(day.overtimeHours) : ""}</td>
-            <td>${day.cumulativeOvertime ? formatHours(day.cumulativeOvertime) : ""}</td>
-            <td>${escapeHtml(day.note || "")}${day.cumulativeOvertime > overtimeLimit ? "，月加班已超過上限" : ""}</td>
+            <td class="cumulative-cell">${day.cumulativeOvertime ? formatHours(day.cumulativeOvertime) : ""}</td>
+            <td class="note-cell">${escapeHtml(day.note || "")}${day.cumulativeOvertime > overtimeLimit ? "，月加班已超過上限" : ""}</td>
           </tr>
         `;
       }).join("");
+detailBody.querySelectorAll(".shift-select").forEach((select) => {
+        select.innerHTML = shifts.map((shift) => '<option value="' + escapeHtml(shift.name) + '">' + escapeHtml(shift.name) + '</option>').join("");
+        select.value = select.dataset.shift || shifts[0]?.name || "";
+        select.addEventListener("change", () => {
+          const key = person.key + "|" + select.dataset.date;
+          shiftOverrides[key] = select.value;
+          localStorage.setItem("hr-shift-overrides", JSON.stringify(shiftOverrides));
+          render();
+        });
+      });
     }
 
     function renderEmpty() {
@@ -812,6 +1107,7 @@
       employeeList.innerHTML = `<div class="empty">請先匯入 Excel 或載入範例資料</div>`;
       renderDetail(null, Number(overtimeLimitInput.value || 46));
       exportButton.disabled = true;
+      complianceButton.disabled = true;
     }
 
     function formatHours(value) {
@@ -868,14 +1164,28 @@
       loadWorkbook(workbook);
     });
 
-    [searchInput, monthSelect, requiredHoursInput, overtimeLimitInput].forEach((control) => {
+    floorOvertimeCheckbox.addEventListener("change", () => {
+      localStorage.setItem("hr-floor-overtime", String(floorOvertimeCheckbox.checked));
+      render();
+    });
+
+    [searchInput, monthSelect, overtimeLimitInput].forEach((control) => {
       control.addEventListener("input", render);
       control.addEventListener("change", render);
     });
 
+    function getReportDayStatus(day, overtimeLimit) {
+      const overLimit = day.cumulativeOvertime > overtimeLimit;
+      const baseStatus = day.absent
+        ? (day.holiday ? (day.holiday.type === "typhoon" ? "颱風假" : "國定假日") : "未上班 / 休假")
+        : day.holidayOvertime
+          ? (day.holiday?.type === "typhoon" ? "颱風假加班" : "國定假日加班")
+          : day.weekendOvertime ? "週末加班" : day.short ? "未滿時數" : "正常";
+      return overLimit && baseStatus === "正常" ? "正常；月加班超過上限" : baseStatus;
+    }
     exportButton.addEventListener("click", () => {
       const report = getReport();
-      const headers = ["月份", "員工序號", "考勤號碼", "姓名", "日期", "星期", "狀態", "上班1", "下班1", "上班2", "下班2", "合計小時", "加班時數", "月加班累計", "備註"];
+      const headers = ["月份", "員工序號", "考勤號碼", "姓名", "日期", "星期", "班別", "狀態", "班別起始", "班別結束", "上班1", "下班1", "上班2", "下班2", "合計小時", "加班時數", "月加班累計", "備註"];
       
       const headerStyle = {
         font: { bold: true, color: { rgb: "FFFFFF" } },
@@ -897,6 +1207,16 @@
         fill: { fgColor: { rgb: "FAFBFC" } }
       };
 
+      const warnStyle = {
+        ...normalStyle,
+        font: { color: { rgb: "B26A00" }, bold: true },
+        fill: { fgColor: { rgb: "FFF4D6" } }
+      };
+      const okStyle = {
+        ...normalStyle,
+        font: { color: { rgb: "2E7D32" }, bold: true },
+        fill: { fgColor: { rgb: "EAF6EC" } }
+      };
       const workbook = XLSX.utils.book_new();
       const usedSheetNames = new Set();
 
@@ -913,7 +1233,10 @@
             person.name,
             formatDate(day.date),
             `星期${weekdays[day.date.getDay()]}`,
-            day.absent ? "未上班/休假" : day.short ? "未滿時數" : "正常",
+            day.shift?.name || "",
+            getReportDayStatus(day, report.overtimeLimit),
+            day.shift?.start || "",
+            day.shift?.end || "",
             day.start1 || "",
             day.end1 || "",
             day.start2 || "",
@@ -925,9 +1248,14 @@
           ]);
 
           styles.push(headers.map((_, columnIndex) => {
+            if (columnIndex === 7) {
+              if (day.absent) return warnStyle;
+              if (day.holidayOvertime || day.weekendOvertime || day.short || overLimitAfterThisDay) return redStyle;
+              return okStyle;
+            }
             if (day.absent) return absentStyle;
-            if (day.short && [6, 11, 14].includes(columnIndex)) return redStyle;
-            if (overLimitAfterThisDay && [12, 13, 14].includes(columnIndex)) return redStyle;
+            if (day.short && [14, 15, 16, 17].includes(columnIndex)) return redStyle;
+            if (overLimitAfterThisDay && [15, 16, 17].includes(columnIndex)) return redStyle;
             return normalStyle;
           }));
         });
@@ -941,8 +1269,9 @@
 
         worksheet["!cols"] = [
           { wch: 10 }, { wch: 10 }, { wch: 12 }, { wch: 10 }, { wch: 12 },
-          { wch: 8 }, { wch: 12 }, { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 10 },
-          { wch: 10 }, { wch: 10 }, { wch: 12 }, { wch: 28 }
+          { wch: 8 }, { wch: 12 }, { wch: 10 }, { wch: 10 }, { wch: 10 },
+          { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 10 },
+          { wch: 10 }, { wch: 10 }, { wch: 28 }
         ];
         worksheet["!freeze"] = { xSplit: 0, ySplit: 1 };
 
@@ -984,6 +1313,122 @@
       URL.revokeObjectURL(blobUrl);
     });
 
+    function formatClockMinutes(minutes) {
+      const normalized = Math.max(0, Math.round(minutes));
+      const hours = Math.floor(normalized / 60) % 24;
+      const mins = normalized % 60;
+      return String(hours).padStart(2, "0") + ":" + String(mins).padStart(2, "0") + ":00";
+    }
+
+    function getInspectionEndTime(day) {
+      if (day.absent || day.weekendOvertime || day.holidayOvertime || day.cumulativeOvertime <= Number(overtimeLimitInput.value || 46)) return "";
+      const endKey = day.end2 ? "end2" : "end1";
+      const endMinutes = parseClockMinutes(day[endKey]);
+      return endMinutes === null ? "" : formatClockMinutes(endMinutes - day.overtimeHours * 60);
+    }
+    function getInspectionStartTime(day) {
+      if (day.absent || day.weekendOvertime || day.holidayOvertime) return "";
+      const actualStart = parseClockMinutes(day.start1);
+      const shiftStart = parseClockMinutes(day.shift?.start);
+      if (actualStart === null && shiftStart === null) return "";
+      return formatClockMinutes(Math.max(actualStart ?? shiftStart, shiftStart ?? actualStart));
+    }
+
+    function getAdjustedInspectionEnd(day) {
+      if (day.absent || day.weekendOvertime || day.holidayOvertime) return "";
+      const endKey = day.end2 ? "end2" : "end1";
+      const endMinutes = parseClockMinutes(day[endKey]);
+      return endMinutes === null ? "" : formatClockMinutes(endMinutes - day.overtimeHours * 60);
+    }
+
+    complianceButton.addEventListener("click", () => {
+      const report = getReport();
+      const headers = ["月份", "員工序號", "考勤號碼", "姓名", "日期", "星期", "班別", "班別起始", "班別結束", "上班檢核", "下班檢核", "合計小時檢核", "加班時數檢核", "月加班累計檢核", "狀態", "上班1", "下班1", "上班2", "下班2", "合計小時", "加班時數", "月加班累計", "備註"];
+      const headerStyle = { font: { bold: true, color: { rgb: "FFFFFF" } }, fill: { fgColor: { rgb: "2458A6" } }, alignment: { horizontal: "center", vertical: "center" }, border: thinBorder() };
+      const normalStyle = { border: thinBorder(), alignment: { vertical: "center" } };
+      const redStyle = { ...normalStyle, font: { color: { rgb: "C62828" }, bold: true } };
+      const warnStyle = { ...normalStyle, font: { color: { rgb: "B26A00" }, bold: true }, fill: { fgColor: { rgb: "FFF4D6" } } };
+      const okStyle = { ...normalStyle, font: { color: { rgb: "2E7D32" }, bold: true }, fill: { fgColor: { rgb: "EAF6EC" } } };
+      const absentStyle = { ...normalStyle, font: { color: { rgb: "7D8794" } }, fill: { fgColor: { rgb: "FAFBFC" } } };
+      const workbook = XLSX.utils.book_new();
+      const usedSheetNames = new Set();
+
+      report.people.forEach((person) => {
+        let inspectionCumulative = 0;
+        const rows = [headers];
+        const styles = [headers.map(() => headerStyle)];
+        person.days.forEach((day) => {
+          const isRestDay = day.weekendOvertime || day.holidayOvertime;
+          const exceedsLimit = !day.absent && !isRestDay && inspectionCumulative + day.overtimeHours > report.overtimeLimit;
+          const inspectionStart = getInspectionStartTime(day);
+          const actualEnd = day.end2 || day.end1 || "";
+          const inspectionEnd = isRestDay || day.absent ? "" : (exceedsLimit ? getAdjustedInspectionEnd(day) : actualEnd);
+          const checkOvertime = isRestDay || day.absent || exceedsLimit ? 0 : day.overtimeHours;
+          if (!isRestDay && !day.absent && !exceedsLimit) inspectionCumulative += day.overtimeHours;
+          const startMinutes = parseClockMinutes(inspectionStart);
+          const endMinutes = parseClockMinutes(inspectionEnd);
+          const checkTotal = day.absent || isRestDay ? "" : exceedsLimit && startMinutes !== null && endMinutes !== null
+            ? formatHours(Math.max(0, endMinutes - startMinutes) / 60)
+            : formatHours(day.totalHours);
+          const note = (day.note || "") + (exceedsLimit ? "；排班建議已扣除當日加班時數" : isRestDay ? "；週末／假日排班建議不列入加班" : "");
+          const checkDay = { ...day, cumulativeOvertime: inspectionCumulative, overtimeHours: checkOvertime };
+          rows.push([
+            monthSelect.value, person.employeeNo, person.attendanceNo, person.name,
+            formatDate(day.date), `星期${weekdays[day.date.getDay()]}`, day.shift?.name || "",
+            inspectionStart ? day.shift?.start || "" : "", inspectionStart ? day.shift?.end || "" : "",
+            inspectionStart, inspectionEnd, checkTotal, checkOvertime ? formatHours(checkOvertime) : "", inspectionCumulative ? formatHours(inspectionCumulative) : "",
+            getReportDayStatus(checkDay, report.overtimeLimit),
+            day.start1 || "", day.end1 || "", day.start2 || "", day.end2 || "",
+            day.absent ? "" : formatHours(day.totalHours), day.overtimeHours ? formatHours(day.overtimeHours) : "",
+            day.cumulativeOvertime ? formatHours(day.cumulativeOvertime) : "", note
+          ]);
+          styles.push(headers.map((_, columnIndex) => {
+            if (columnIndex === 14) {
+              if (day.absent) return warnStyle;
+              if (day.holidayOvertime || day.weekendOvertime || day.short || exceedsLimit) return redStyle;
+              return okStyle;
+            }
+            if (day.absent) return absentStyle;
+            return normalStyle;
+          }));
+        });
+
+        const worksheet = XLSX.utils.aoa_to_sheet(rows);
+        Object.keys(worksheet).forEach((address) => {
+          if (address[0] === "!") return;
+          const cell = XLSX.utils.decode_cell(address);
+          worksheet[address].s = styles[cell.r]?.[cell.c] || normalStyle;
+        });
+        worksheet["!cols"] = [
+          { wch: 10 }, { wch: 10 }, { wch: 12 }, { wch: 10 }, { wch: 12 },
+          { wch: 8 }, { wch: 10 }, { wch: 10 }, { wch: 12 }, { wch: 12 },
+          { wch: 14 }, { wch: 14 }, { wch: 16 }, { wch: 24 }, { wch: 10 },
+          { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 10 },
+          { wch: 10 }, { wch: 36 }
+        ];
+        worksheet["!freeze"] = { xSplit: 0, ySplit: 1 };
+        let sheetName = (person.name + "_B表").replace(/[\\/*?[\]]/g, "");
+        if (sheetName.length > 31) sheetName = sheetName.slice(0, 31);
+        let finalSheetName = sheetName;
+        let suffix = 1;
+        while (usedSheetNames.has(finalSheetName)) finalSheetName = `${sheetName.slice(0, 28)}_${suffix++}`;
+        usedSheetNames.add(finalSheetName);
+        XLSX.utils.book_append_sheet(workbook, worksheet, finalSheetName);
+      });
+
+      const wbout = XLSX.write(workbook, { bookType: "xlsx", type: "binary" });
+      const buf = new ArrayBuffer(wbout.length);
+      const view = new Uint8Array(buf);
+      for (let i = 0; i < wbout.length; i++) view[i] = wbout.charCodeAt(i) & 0xFF;
+      const blobUrl = URL.createObjectURL(new Blob([buf], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }));
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = `HR月結考勤檢核_B表_${monthSelect.value}.xlsx`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(blobUrl);
+    });
     function thinBorder() {
       return {
         top: { style: "thin", color: { rgb: "D8DEE8" } },
@@ -994,13 +1439,8 @@
     }
 
     renderEmpty();
-
-    if (window.location.protocol === "file:") {
-      const warningBanner = document.getElementById("fileProtocolWarning");
-      if (warningBanner) {
-        warningBanner.classList.remove("hidden");
-      }
-    }
+    showView("importView");
   </script>
-</body>
-</html>
+
+
+</body></html>
