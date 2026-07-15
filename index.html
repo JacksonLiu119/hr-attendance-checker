@@ -110,8 +110,8 @@
     .architecture-card h2 { font-size: 18px; margin: 0 0 8px; }
     .architecture-card p { color: var(--muted); margin: 0; font-size: 14px; }
 
-    .placeholder-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-    .placeholder-panel { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 20px; min-height: 170px; }
+    .placeholder-grid { display: block; }
+    .placeholder-panel { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 18px; }
     .placeholder-panel h2 { margin: 0 0 8px; font-size: 18px; }
     .placeholder-panel p { margin: 0; color: var(--muted); }
     .setting-option { display: flex; align-items: flex-start; gap: 10px; margin-top: 14px; color: var(--ink); }
@@ -199,10 +199,9 @@
       padding: 8px 10px;
       color: var(--ink);
     }
-
     .summary {
       display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 12px;
       margin-bottom: 18px;
     }
@@ -464,7 +463,6 @@
         </div>
         <div class="placeholder-grid">
           <section class="placeholder-panel"><h2>其他功能</h2><p>放置加班計算與資料來源等共用設定。</p><label class="setting-option"><input id="floorOvertimeCheckbox" type="checkbox"><span><strong>加班時數無條件捨去小數</strong><br><small>勾選後，0.97 小時算 0 小時，2.9 小時算 2 小時，再累計月加班。</small></span></label></section>
-          <section class="placeholder-panel"><h2>資料來源設定</h2><p>此區預留考勤 Excel 欄位對應與匯入格式說明。</p></section>
         </div>
       </section>
 
@@ -493,14 +491,6 @@
         <div class="metric">
           <div class="field-title">上班日筆數</div>
           <div id="totalWorkDays" class="value">0</div>
-        </div>
-        <div class="metric warn">
-          <div class="field-title">未上班 / 休假日</div>
-          <div id="totalAbsentDays" class="value">0</div>
-        </div>
-        <div class="metric danger">
-          <div class="field-title">未滿 9 小時</div>
-          <div id="totalShortDays" class="value">0</div>
         </div>
         <div class="metric danger">
           <div class="field-title">加班超過上限</div>
@@ -562,7 +552,7 @@
     const monthSelect = document.querySelector("#monthSelect");
     const overtimeLimitInput = document.querySelector("#overtimeLimit");
     const floorOvertimeCheckbox = document.querySelector("#floorOvertimeCheckbox");
-    floorOvertimeCheckbox.checked = localStorage.getItem("hr-floor-overtime") === "true";
+    floorOvertimeCheckbox.checked = localStorage.getItem("hr-floor-overtime") !== "false";
     const employeeList = document.querySelector("#employeeList");
     const detailBody = document.querySelector("#detailBody");
     const detailTitle = document.querySelector("#detailTitle");
@@ -1019,8 +1009,6 @@
 
       document.querySelector("#totalEmployees").textContent = String(report.people.length);
       document.querySelector("#totalWorkDays").textContent = String(report.people.reduce((sum, person) => sum + person.workDays, 0));
-      document.querySelector("#totalAbsentDays").textContent = String(report.people.reduce((sum, person) => sum + person.absentDays, 0));
-      document.querySelector("#totalShortDays").textContent = String(report.people.reduce((sum, person) => sum + person.shortDays, 0));
       document.querySelector("#totalOverLimit").textContent = String(report.people.filter((person) => person.overLimit).length);
       document.querySelector("#employeeCount").textContent = `${people.length} 人`;
 
@@ -1100,8 +1088,6 @@ detailBody.querySelectorAll(".shift-select").forEach((select) => {
     function renderEmpty() {
       document.querySelector("#totalEmployees").textContent = "0";
       document.querySelector("#totalWorkDays").textContent = "0";
-      document.querySelector("#totalAbsentDays").textContent = "0";
-      document.querySelector("#totalShortDays").textContent = "0";
       document.querySelector("#totalOverLimit").textContent = "0";
       document.querySelector("#employeeCount").textContent = "0 人";
       employeeList.innerHTML = `<div class="empty">請先匯入 Excel 或載入範例資料</div>`;
